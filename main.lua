@@ -7,11 +7,9 @@
 --Settings screen buttons
 --app icons
 --realign all buttons in game
---levels for the fill board
 --in game settings menu for lines and ghost piece and next piece
 --fix display scaling for backgrounds then test on device for anything else
---new image for fail screen no and game over
---check pause button for new image
+--new image for fail screen game over
 --allign background to brick floor
 --allign brick floor to freeze point on board
 
@@ -27,7 +25,7 @@ timer.performWithDelay(1, function() collectgarbage("collect") end)
 options = {loop = -1}
 
 --Global variable for filling the board.
-fillBoard = true
+fillBoard = 0
 
 --Global variable used for if sound effects are to be used.
 soundEffects = true
@@ -139,7 +137,6 @@ line1 = display.newRect(0,0,0,0)
 line2 = display.newRect(0,0,0,0)
 
 --References to the settings buttons
-fillImage = {}
 soundEffectImage = {}
 musicImage = {}
 controlImage = {}
@@ -153,6 +150,8 @@ highScore = {}
 highScore.score1 = 100
 highScore = loadTable("highScore.json")
 
+fillTextNumber = display.newRect(0,0,0,0)
+
 --if highScore.score1 == 100 then -- highScore.score1 == nil then
 --	highScore.score1 = 1500
 --	saveTable(highScore, "highScore.json")
@@ -165,6 +164,7 @@ function settingsScreen()
 	menuScreen:removeSelf()
 	audio.stop()
 	settingScreenGroup = display.newGroup()
+	fillTextNumber:removeSelf()
 	
 	local fillText = display.newText(settingScreenGroup, "Fill Board", display.contentWidth/5, display.contentHeight/6, native.systemFontBold, 16)
 	local soundEffectText = display.newText(settingScreenGroup, "Sound Effects", display.contentWidth/5, display.contentHeight/6 * 2, native.systemFontBold, 16)
@@ -175,12 +175,24 @@ function settingsScreen()
 	
 	local backText = display.newText(settingScreenGroup, "Main Menu", display.contentWidth/2, display.contentHeight/6 * 5, native.systemFontBold, 16)
 	
-	--Used to create the correct button depending on the value of the corresponding flags.
-	if fillBoard == true then
-		fillImage = display.newImage("on_button.png")
-	else 
-		fillImage = display.newImage("off_button.png")
-	end
+	local fillMinus = display.newImage("minus.png")
+	local fillPlus = display.newImage("plus.png")
+	settingScreenGroup:insert(fillMinus)
+	settingScreenGroup:insert(fillPlus)
+	fillTextNumber = display.newText(fillBoard, display.contentWidth/4 * 3, display.contentHeight/6, native.systemFontBold, 16)
+	
+	fillMinus.x = display.contentWidth/4 * 3 - 30
+	fillPlus.x = display.contentWidth/4 * 3 + 30
+	fillMinus.y = display.contentHeight/6 +7
+	fillPlus.y = display.contentHeight/6
+	fillMinus.width = 50
+	fillMinus.height = 50
+	fillPlus.width = 30
+	fillPlus.height = 30
+	
+	fillMinus:addEventListener("tap", minusFill)
+	fillPlus:addEventListener("tap", addFill)
+	
 	if soundEffects == true then
 		soundEffectImage = display.newImage("on_button.png")
 	else 
@@ -198,25 +210,21 @@ function settingsScreen()
 	end
 	
 	--Scaling for the current image
-	fillImage:scale(0.5, 0.5)
 	soundEffectImage:scale(0.5, 0.5)
 	musicImage:scale(0.5, 0.5)
 	controlImage:scale(0.5, 0.5)
 	
 	-- The x values of the buttons
-	fillImage.x = display.contentWidth/4 * 3
 	soundEffectImage.x = display.contentWidth/4 * 3
 	musicImage.x = display.contentWidth/4 * 3
 	controlImage.x = display.contentWidth/4 * 3
 	
 	--The y values of the buttons
-	fillImage.y = display.contentHeight/6
 	soundEffectImage.y = display.contentHeight/6 * 2
 	musicImage.y = display.contentHeight/6 * 3
 	controlImage.y = display.contentHeight/6 * 4
 	
 	--The event listeners for the buttons	
-	fillImage:addEventListener("tap", changeFill)
 	soundEffectImage:addEventListener("tap", soundEffect)
 	musicImage:addEventListener("tap", soundMusic)
 	controlImage:addEventListener("tap", displayControl)	
@@ -230,13 +238,11 @@ function backToMenu()
 	settingScreenGroup:removeSelf()
 	settingScreenGroup = display.newGroup()
 	
-	fillImage:removeSelf()
 	soundEffectImage:removeSelf()
 	musicImage:removeSelf()
 	controlImage:removeSelf()
 	
 	--Used to keep a blank reference, to keep other code from removing nil references.
-	fillImage = display.newRect(0,0,0,0)
 	soundEffectImage = display.newRect(0,0,0,0)
 	musicImage = display.newRect(0,0,0,0)
 	controlImage = display.newRect(0,0,0,0)
@@ -514,25 +520,24 @@ function createBoard()
 	end
 end
 
---Listener method used to change if the board is to be filled or not.
-function changeFill()
-	if fillBoard then
-		fillBoard = false
-		fillImage:removeSelf()
-		fillImage = display.newImage("off_button.png")
-		fillImage.x = display.contentWidth/ 4 * 3
-		fillImage.y = display.contentHeight / 6
-		fillImage:scale(0.5, 0.5)
-		fillImage:addEventListener("tap", changeFill)
-	else 
-		fillBoard = true
-		fillImage:removeSelf()
-		fillImage = display.newImage("on_button.png")
-		fillImage.x = display.contentWidth/ 4 * 3
-		fillImage.y = display.contentHeight / 6
-		fillImage:scale(0.5, 0.5)
-		fillImage:addEventListener("tap", changeFill)
+--Increment the fillBoard number
+function addFill()
+	if fillBoard >= 5 then
+		return
 	end
+	fillBoard = fillBoard + 1
+	fillTextNumber:removeSelf()
+	fillTextNumber = display.newText(fillBoard, display.contentWidth/4 * 3, display.contentHeight/6, native.systemFontBold, 16)
+end
+
+--decrement the fillBoard number
+function minusFill()
+	if fillBoard <= 0 then
+		return
+	end
+	fillBoard = fillBoard - 1
+	fillTextNumber:removeSelf()
+	fillTextNumber = display.newText(fillBoard, display.contentWidth/4 * 3, display.contentHeight/6, native.systemFontBold, 16)
 end
 
 --Listener method used to change if sound effects are to be used.
@@ -669,6 +674,7 @@ end
 --Used to stop the game when the user fails.
 function fail()
 	if start_over then
+		background:removeSelf()
 		deleteBoard()
 		board = {}
 		pieceCreate = false
@@ -685,9 +691,11 @@ function fail()
 		yes.y = (display.contentHeight/4) * 3
 		--yes:scale(0.4, 0.4)
 		local no = display.newImage("no.png")
-		no:scale(0.5, 0.5)
+		--no:scale(0.5, 0.5)
 		no.x = (display.contentWidth/4) * 3
 		no.y = (display.contentHeight/4) * 3
+		no.width = 140
+		no.height = 100
 		
 		local failed = display.newImage("fail.png")
 		
@@ -1128,7 +1136,8 @@ end
 
 --Prepopulates the boards with random blocks
 function fillBoardCreate()
-	for number = 0, 10 do
+	local upperBound = fillBoard * 2
+	for number = 0, upperBound do
 		i = math.random(13, 23)
 		j = math.random(0, 10)
 		board[i][j] = display.newRect((j * board_offset) + x_offset, (i * board_offset) + y_offset, block_size, block_size)
@@ -1154,7 +1163,7 @@ function create()
 	extra_group = display.newGroup()
 	createBoard()
 	
-	if fillBoard then
+	if fillBoard > 0 then
 		fillBoardCreate()
 	end
 	
@@ -1240,7 +1249,7 @@ function create()
 		audio.play(sfx.level_one, options)
 	end
 	Runtime:addEventListener("system", onSystemEvent)
-	--timer.performWithDelay(1000,fail, 1)
+	timer.performWithDelay(1000,fail, 1)
 end
 
 --Attempt to pause game when lost focus. Does not work currently.
