@@ -150,13 +150,15 @@ function settingsScreen()
 	menuScreen:removeSelf()
 	audio.stop()
 	settingScreenGroup = display.newGroup()
-
-	local fillText = display.newText(settingScreenGroup, "Fill Board", display.contentWidth/5, display.contentHeight/6, native.systemFontBold, 14)
-	local soundEffectText = display.newText(settingScreenGroup, "Sound Effects", display.contentWidth/5, display.contentHeight/6 * 2, native.systemFontBold, 14)
-	local musicText = display.newText(settingScreenGroup, "music", display.contentWidth/5, display.contentHeight/6 * 3, native.systemFontBold, 14)
-	local controlText = display.newText(settingScreenGroup, "Control: On for Tap", display.contentWidth/5, display.contentHeight/6 * 4, native.systemFontBold, 14)
 	
-	local backText = display.newText(settingScreenGroup, "Main Menu", display.contentWidth/2, display.contentHeight/6 * 5, native.systemFontBold, 14)
+	local fillText = display.newText(settingScreenGroup, "Fill Board", display.contentWidth/5, display.contentHeight/6, native.systemFontBold, 16)
+	local soundEffectText = display.newText(settingScreenGroup, "Sound Effects", display.contentWidth/5, display.contentHeight/6 * 2, native.systemFontBold, 16)
+	local musicText = display.newText(settingScreenGroup, "Music", display.contentWidth/5, display.contentHeight/6 * 3, native.systemFontBold, 16)
+	local controlText = display.newText(settingScreenGroup, "Control:", display.contentWidth/5, display.contentHeight/6 * 4- 6, native.systemFontBold, 16)
+	local controlText2 = display.newText(settingScreenGroup, "On for Tap", display.contentWidth/5, display.contentHeight/6 * 4 + 11, native.systemFontBold, 16)
+	
+	
+	local backText = display.newText(settingScreenGroup, "Main Menu", display.contentWidth/2, display.contentHeight/6 * 5, native.systemFontBold, 16)
 	
 	--Used to create the correct button depending on the value of the corresponding flags.
 	if fillBoard == true then
@@ -588,13 +590,15 @@ function addMenuScreen()
 	menuScreen = display.newGroup()
 	local mScreen = display.newImage("splash_other.png")
 	mScreen:toBack()
-	local startButton = display.newImage("start4.png")
-	startButton:scale( 0.65, 0.65)
+	local startButton = display.newText("Play Game", display.contentWidth/5, display.contentHeight/4 * 3.7,  native.systemFontBold, 20)
+	-- display.newImage("start4.png")
+	--startButton:scale( 0.65, 0.65)
 	
-	local settingsButton = display.newImage("settings.png")
-	settingsButton:scale(0.08, 0.08)
-	settingsButton.x = display.contentWidth/4 * 3.25
-	settingsButton.y = display.contentHeight/4 * 3.70
+	local settingsButton = display.newText("Settings", display.contentWidth/4 * 3.25, display.contentHeight/4 * 3.70, native.systemFontBold, 20)
+	-- display.newImage("settings.png")
+	--settingsButton:scale(0.08, 0.08)
+	--settingsButton.x = display.contentWidth/4 * 3.25
+	--settingsButton.y = display.contentHeight/4 * 3.70
 	settingsButton:addEventListener("tap", settingsScreen)
 	
 	mScreen.x = display.contentWidth/2 
@@ -604,8 +608,8 @@ function addMenuScreen()
 	menuScreen:insert(settingsButton)
 	
 	startButton.name = 'startB'
-	startButton.x = display.contentWidth/5
-	startButton.y = display.contentHeight/4 * 3.6 + 8
+	--startButton.x = display.contentWidth/5
+	--startButton.y = display.contentHeight/4 * 3.6 + 8
 	startButton:addEventListener('tap', tweenMS)
 	
 	if music then 
@@ -1086,31 +1090,23 @@ function moveRight()
 end
 
 --Listener method for moving left using tap controls.
-function moveLeftGlobal(e) 
+function tapMove(e) 
 	if (pause) then 
 		return
-	elseif (e.x < 235/2) and checkMove(-1, 0)  then
-		currentPiece.x = currentPiece.x - 21
+	elseif (e.x < 235/2) then
+		moveLeft()
+	elseif (e.x >= 235/2) and (e.x < 235) and checkMove(1, 0) then 
+		moveRight()
 	end
 	drawPiece(pieceRotation(currentPiece))
 	
-end
-
---Listener method for moving right using tap controls.
-function moveRightGlobal(e) 
-	if (pause) then 
-		return
-	elseif (e.x > 235/2) and (e.x < 235) and checkMove(1, 0) then  
-		currentPiece.x = currentPiece.x + 21
-	end
-	drawPiece(pieceRotation(currentPiece))
 end
 
 --Listener method for droping the piece using tap controls
 function dropPieceMotion(e)
 	if (pause) then
 		return
-	elseif (e.yStart < e.y) and (e.phase == "ended") then
+	elseif (e.yStart + 15 < e.y) and (e.phase == "ended") then
 		dropPiece()
 	end
 end
@@ -1169,9 +1165,7 @@ function create()
 		extra_group:insert(rightB)
 		
 	else
-		Runtime:addEventListener("tap", moveLeftGlobal)
-		Runtime:addEventListener("tap", moveRightGlobal)
-		
+		Runtime:addEventListener("tap", tapMove)
 	end
 	Runtime:addEventListener("touch", dropPieceMotion)
 
@@ -1228,6 +1222,7 @@ function create()
 	--timer.performWithDelay(1000,fail, 1)
 end
 
+--Attempt to pause game when lost focus. Does not work currently.
 function onSystemEvent(event)
 	if event.name == "applicationSuspend" then
 		pauseGame()
