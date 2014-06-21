@@ -387,10 +387,10 @@ function drawNextPiece()
 	nextPiece["type"] = type
 	local the_pieces = pieceRotation(nextPiece)
 	
-	local displayNext1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset , block_size, block_size)
-	local displayNext2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + the_pieces.piece2y) * board_offset + y_offset , block_size, block_size)
-	local displayNext3 = display.newRect((j + the_pieces.piece3x) * board_offset + x_offset, (i + the_pieces.piece3y) * board_offset + y_offset , block_size, block_size)
-	local displayNext4 = display.newRect((j + the_pieces.piece4x) * board_offset + x_offset, (i + the_pieces.piece4y) * board_offset + y_offset , block_size, block_size)
+	local displayNext1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset + 30 , block_size, block_size)
+	local displayNext2 = display.newRect((j + the_pieces.piece2x) * board_offset + x_offset, (i + the_pieces.piece2y) * board_offset + y_offset + 30 , block_size, block_size)
+	local displayNext3 = display.newRect((j + the_pieces.piece3x) * board_offset + x_offset, (i + the_pieces.piece3y) * board_offset + y_offset + 30 , block_size, block_size)
+	local displayNext4 = display.newRect((j + the_pieces.piece4x) * board_offset + x_offset, (i + the_pieces.piece4y) * board_offset + y_offset + 30 , block_size, block_size)
 	
 	nextPieceGroup:insert(displayNext1)
 	nextPieceGroup:insert(displayNext2)
@@ -409,10 +409,10 @@ function updateScore(rows)
 	totalScoreCopy = totalScoreCopy + (rows * 100)
 	totalScore = totalScore + (rows * 100)
 	scoreGroup = display.newGroup()
-	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/5) * 3 + 20, 50, 50)
+	local scoreBox = display.newRect(display.contentWidth - 50 , (display.contentHeight/5) * 3 + 60, 50, 50)
 	scoreBox:setFillColor(1,1,1)
 	scoreGroup:insert(scoreBox)
-	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 5) * 3 + 20, native.systemFontBold, 14)
+	local text = display.newText(totalScore, display.contentWidth - 50, (display.contentHeight / 5) * 3 + 60, native.systemFontBold, 14)
 	text:setFillColor(0,0,0)
 	scoreGroup:insert(text)
 	--If user has reached enough points for the next level
@@ -668,7 +668,7 @@ function fail()
 		local yes = display.newImage("yes.png")
 		yes.x = display.contentWidth/4
 		yes.y = (display.contentHeight/4) * 3
-		yes:scale(0.4, 0.4)
+		--yes:scale(0.4, 0.4)
 		local no = display.newImage("no.png")
 		no:scale(0.5, 0.5)
 		no.x = (display.contentWidth/4) * 3
@@ -702,14 +702,14 @@ function fail()
 		pieceLines = display.newGroup()
 		ghostGroup = display.newGroup()
 		
-		if totalScore > highScore.score1 then
-			highScore.score1 = totalScore
-			saveTable(highScore, "highScore.json")
-			display.newText(gameOverGroup, "NEW HIGHSCORE!", display.contentWidth/2, display.contentHeight/2 + 30, native.systemFontBold, 16)
-		end
+		--if totalScore > highScore.score1 then
+		--	highScore.score1 = totalScore
+		--	saveTable(highScore, "highScore.json")
+		--	display.newText(gameOverGroup, "NEW HIGHSCORE!", display.contentWidth/2, display.contentHeight/2 + 30, native.systemFontBold, 16)
+		--end
 	
-		highScoreText = display.newText(gameOverGroup, "High Score: "..highScore.score1, display.contentWidth/5 * 2- 30, display.contentHeight/2, native.systemFontBold, 14)
-		highScoreText:setFillColor(0,0,0)
+		--highScoreText = display.newText(gameOverGroup, "High Score: "..highScore.score1, display.contentWidth/5 * 2- 30, display.contentHeight/2, native.systemFontBold, 14)
+		--highScoreText:setFillColor(0,0,0)
 		
 		yourScoreText = display.newText(gameOverGroup, "Your Score: "..totalScore, display.contentWidth/5 * 4 - 35, display.contentHeight/2, native.systemFontBold, 14)
 		yourScoreText:setFillColor(0,0,0)
@@ -779,7 +779,7 @@ function updateBoard(the_pieces)
 			board[i + the_pieces.piece1y][j + the_pieces.piece1x] = display.newRect((j + the_pieces.piece1x)* board_offset + x_offset, (i + the_pieces.piece1y)*board_offset + y_offset, block_size, block_size)
 			board[i + the_pieces.piece1y][j + the_pieces.piece1x]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 			group:insert(board[i + the_pieces.piece1y][j + the_pieces.piece1x])
-			physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
+			--physics.addBody(board[i + the_pieces.piece1y][j + the_pieces.piece1x], "kinematic")
 		end
 		
 		if i + the_pieces.piece2y > board_height or j + the_pieces.piece2x > board_width or j + the_pieces.piece2x < 0 or i + the_pieces.piece2y < 0 then
@@ -790,7 +790,7 @@ function updateBoard(the_pieces)
 			board[i + the_pieces.piece2y][j + the_pieces.piece2x] = display.newRect((j + the_pieces.piece2x)* board_offset + x_offset, (i + the_pieces.piece2y)*board_offset + y_offset, block_size, block_size)
 			board[i + the_pieces.piece2y][j + the_pieces.piece2x]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 			group:insert(board[i + the_pieces.piece2y][j + the_pieces.piece2x])
-			physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
+			--physics.addBody(board[i + the_pieces.piece2y][j + the_pieces.piece2x], "kinematic")
 		end
 		if i + the_pieces.piece3y > board_height or j + the_pieces.piece3x > board_width  or j + the_pieces.piece3x < 0 or i + the_pieces.piece3y < 0 then
 			pause = true
@@ -800,7 +800,7 @@ function updateBoard(the_pieces)
 			board[i + the_pieces.piece3y][j + the_pieces.piece3x] = display.newRect((j + the_pieces.piece3x)*board_offset + x_offset, (i + the_pieces.piece3y)*board_offset + y_offset, block_size, block_size)
 			board[i + the_pieces.piece3y][j + the_pieces.piece3x]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 			group:insert(board[i + the_pieces.piece3y][j + the_pieces.piece3x])
-			physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
+			--physics.addBody(board[i + the_pieces.piece3y][j + the_pieces.piece3x], "kinematic")
 		end
 		if i + the_pieces.piece4y > board_height or j + the_pieces.piece4x > board_width  or j + the_pieces.piece4x < 0 or i + the_pieces.piece4y < 0 then
 			pause = true
@@ -810,7 +810,7 @@ function updateBoard(the_pieces)
 			board[i + the_pieces.piece4y][j + the_pieces.piece4x] = display.newRect((j + the_pieces.piece4x)* board_offset + x_offset, (i + the_pieces.piece4y)* board_offset + y_offset, block_size, block_size)
 			board[i + the_pieces.piece4y][j + the_pieces.piece4x]:setFillColor(math.random(low_color, high_color) / 100 ,math.random(low_color, high_color) / 100, math.random(low_color, high_color) / 100)
 			group:insert(board[i + the_pieces.piece4y][j + the_pieces.piece4x])
-			physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "kinematic")
+			--physics.addBody(board[i + the_pieces.piece4y][j + the_pieces.piece4x], "kinematic")
 		end
 		removeRows()
 	end
@@ -1006,7 +1006,7 @@ function freezePiece(freezeEvent)
 		end
 		local pieces = pieceRotation(currentPiece)
 		--physics.removeBody(currentPiece)
-		physics.addBody(currentPiece, "static")
+		--physics.addBody(currentPiece, "static")
 		currentPiece.myName = "death"
 		pieceCreate = false
 		randomizeColor()
@@ -1143,42 +1143,51 @@ function create()
 		fillBoardCreate()
 	end
 	
-	--Dont think physics is necassary anymore. left in cause it doesn't cause problems for now.
-	local physics = require("physics")
-	physics.start()
-	physics.setGravity(0, 0)
-	
 	if tapControl == false then
-		local leftB = display.newImage("left_button.png")
-		leftB.x = display.contentWidth - 50
-		leftB.y = display.contentHeight / 8 - 25
-		leftB:scale(0.6, 0.6)
+		local leftB = display.newImage("left_arrow.png")
+		leftB.x = display.contentWidth - 40
+		leftB.y = display.contentHeight / 6 + 10
+		--leftB:scale(0.6, 0.6)
+		leftB.width = 60
+		leftB.height = 60
 		leftB:addEventListener("tap", moveLeft)
 
-		local rightB = display.newImage("right_button.png")
-		rightB.x = display.contentWidth - 50
-		rightB.y = display.contentHeight / 4 -20
-		rightB:scale(0.6, 0.6)
+		local rightB = display.newImage("right_arrow.png")
+		rightB.x = display.contentWidth - 40
+		rightB.y = display.contentHeight / 3 - 10
+		--rightB:scale(0.6, 0.6)
+		rightB.width = 60
+		rightB.height = 60
 		rightB:addEventListener("tap", moveRight)
 	
 		extra_group:insert(leftB)
 		extra_group:insert(rightB)
+		
+		local dropB = display.newImage("down_arrow.png")
+		dropB.x = display.contentWidth - 40
+		dropB.y = display.contentHeight / 8 - 35
+		dropB.width = 60
+		dropB.height = 60
+		dropB:addEventListener("tap", dropPiece)
 		
 	else
 		Runtime:addEventListener("tap", tapMove)
 	end
 	Runtime:addEventListener("touch", dropPieceMotion)
 
-	local rotateB = display.newImage("rotate.png")
-	rotateB.x = display.contentWidth - 50
-	rotateB.y = display.contentHeight /3 + 10
-	rotateB:scale(0.6, 0.6)
+	local rotateB = display.newImage("rotate2.png")
+	rotateB.x = display.contentWidth - 40
+	rotateB.y = display.contentHeight /3  + 60
+	--rotateB:scale(0.5, 0.5)
+	rotateB.width = 75
+	rotateB.height = 65
 	rotateB:addEventListener("tap", rotate) --switch to tap
 	
 	local pauseB = display.newImage("pause.png")
 	pauseB.x = display.contentWidth - 50
-	pauseB.y = (display.contentHeight / 5 )* 2 + 45
-	pauseB:scale(0.5, 0.5)
+	pauseB.y = (display.contentHeight / 5 )* 3
+	pauseB.width = 50
+	pauseB.height = 50
 	
 	pauseB:addEventListener("tap", pauseGame)
 	
@@ -1190,16 +1199,12 @@ function create()
 	local floor = display.newImage("base.png")
 	floor.x = display.contentWidth/2
 	floor.y = display.contentHeight + 43
-	physics.addBody(floor, "static")
 	floor.myName = "Floor"
 
 	local leftWall = display.newRect(0,0,1, display.contentHeight*2 + 50)
 	local rightWall = display.newRect(235, 0, 5, display.contentHeight*2 + 52)
 	leftWall.myName = "leftWall"
 	rightWall.myName = "rightWall"
-
-	physics.addBody(leftWall, "static", {bounce = 0.1, friction = 1.0})
-	physics.addBody(rightWall, "static", {bounce = 0.1, friction = 1.0})
 
 	display.setStatusBar(display.HiddenStatusBar)
 	

@@ -1,5 +1,6 @@
 ## Music
 All credit for the music goes to the following artists from newgrounds.com
+#redo music. Newgrounds licences is not copatible with what we want.
 
 http://www.newgrounds.com/audio/listen/566005 - kyleisme33
 http://www.newgrounds.com/audio/listen/453952 - cyan11
@@ -7,13 +8,18 @@ http://www.newgrounds.com/audio/listen/559629 - FuzzzyDice
 http://www.newgrounds.com/audio/listen/560844 - chaoticmarin
 
 ### Pictures
-http://pixabay.com/en/corona-arch-moab-utah-stone-arch-70818/
-http://pixabay.com/en/firs-nature-forest-snowy-winter-235169/
-http://pixabay.com/en/fog-forest-nature-trees-landscape-67174/
-http://pixabay.com/en/forest-trees-ecology-environment-272595/
-https://www.flickr.com/photos/free_for_commercial_use/14375461993/
+http://pixabay.com/en/corona-arch-moab-utah-stone-arch-70818/ #summer
+http://pixabay.com/en/firs-nature-forest-snowy-winter-235169/ #winter
+http://pixabay.com/en/fog-forest-nature-trees-landscape-67174/ #fall
+http://pixabay.com/en/forest-trees-ecology-environment-272595/ #sprint
+https://www.flickr.com/photos/free_for_commercial_use/14375461993/ #thank you
 
 
 ### Icons
-http://pixabay.com/en/icon-settings-setting-set-47203/
-http://pixabay.com/en/button-start-stop-on-off-pc-305751/
+http://pixabay.com/en/computer-recreation-games-game-24877/ #tetris icon
+http://pixabay.com/en/icon-icons-the-question-mark-button-354010/ #question mark
+http://pixabay.com/en/computer-back-icon-left-right-31182/ #left arrow
+http://pixabay.com/en/internet-green-icon-symbol-arrow-38128/ #down arrow
+http://pixabay.com/en/computer-icon-left-right-arrow-31212/ #right arrow
+http://pixabay.com/en/computer-buttons-software-tick-24849/ #check button
+http://pixabay.com/en/computer-icon-symbol-button-reset-31199/ #rotate button
