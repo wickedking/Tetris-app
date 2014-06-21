@@ -3,6 +3,21 @@
 -- main.lua
 -- Made by WickedKing1392 and ElementBox
 -----------------------------------------------------------------------------------------
+--Redo menu background screen
+--Settings screen buttons
+--app icons
+--realign all buttons in game
+--levels for the fill board
+--in game settings menu for lines and ghost piece and next piece
+--fix display scaling for backgrounds then test on device for anything else
+--new image for fail screen no and game over
+--check pause button for new image
+--allign background to brick floor
+--allign brick floor to freeze point on board
+--disable drop touch on button control
+--reduce app size?
+
+
 highScores = require("highScore")
 
 --Implement better garbage collection
