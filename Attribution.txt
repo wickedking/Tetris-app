@@ -23,3 +23,4 @@ http://pixabay.com/en/internet-green-icon-symbol-arrow-38128/ #down arrow
 http://pixabay.com/en/computer-icon-left-right-arrow-31212/ #right arrow
 http://pixabay.com/en/computer-buttons-software-tick-24849/ #check button
 http://pixabay.com/en/computer-icon-symbol-button-reset-31199/ #rotate button
+http://pixabay.com/en/button-pause-stop-icon-symbol-309040/ #pause button

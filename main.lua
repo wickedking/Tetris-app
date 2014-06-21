@@ -14,7 +14,7 @@
 --check pause button for new image
 --allign background to brick floor
 --allign brick floor to freeze point on board
---disable drop touch on button control
+
 --reduce app size?
 
 
@@ -256,7 +256,7 @@ function pauseGame()
 		pauseText = display.newText("PAUSED", display.contentWidth/2, display.contentHeight/2, native.systemFontBold, 18)
 	else
 		pause = false
-		audio.play(the_music, options)
+		audio.resume()
 		pause_block:removeSelf()
 		pauseText:removeSelf()
 	end
@@ -1187,8 +1187,9 @@ function create()
 		
 	else
 		Runtime:addEventListener("tap", tapMove)
+		Runtime:addEventListener("touch", dropPieceMotion)
 	end
-	Runtime:addEventListener("touch", dropPieceMotion)
+
 
 	local rotateB = display.newImage("rotate2.png")
 	rotateB.x = display.contentWidth - 40
