@@ -7,11 +7,12 @@
 --Settings screen buttons
 --app icons
 --realign all buttons in game
---in game settings menu for lines and ghost piece and next piece
 --fix display scaling for backgrounds then test on device for anything else
 --new image for fail screen game over
 --allign background to brick floor
 --allign brick floor to freeze point on board
+--Redo minus button for fill board number
+--potentially fix lines not being removed
 
 --reduce app size?
 
@@ -152,6 +153,13 @@ highScore = loadTable("highScore.json")
 
 fillTextNumber = display.newRect(0,0,0,0)
 
+pauseGroup = display.newGroup()
+
+useLines = true
+
+ghostImage = display.newRect(0, 0, 0, 0)
+lineImage = display.newRect(0, 0, 0, 0)
+
 --if highScore.score1 == 100 then -- highScore.score1 == nil then
 --	highScore.score1 = 1500
 --	saveTable(highScore, "highScore.json")
@@ -251,22 +259,119 @@ function backToMenu()
 
 end
 
+
+
+--Listener method to switch between using the ghost piece or not.
+function ghostPieceSwitch()
+  if use_ghostPiece == true then
+    use_ghostPiece = false
+    
+    if ghost1 ~= 1 then
+      ghost1:removeSelf()
+      ghost2:removeSelf()
+      ghost3:removeSelf()
+      ghost4:removeSelf()
+    end
+    ghost1 = 1
+    ghost2 = 1
+    ghost3 = 1
+    ghost4 = 1
+    
+    ghostImage = display.newImage("off_button.png")
+    ghostImage:scale(0.5, 0.5)
+    ghostImage.x = display.contentWidth / 4 * 3
+    ghostImage.y = display.contentHeight / 3
+    pauseGroup:insert(ghostImage)
+  else
+    use_ghostPiece = true
+    ghostImage = display.newImage("on_button.png")
+    ghostImage:scale(0.5, 0.5)
+    ghostImage.x = display.contentWidth / 4 * 3
+    ghostImage.y = display.contentHeight / 3
+    pauseGroup:insert(ghostImage)
+  end
+end
+
+--Listener method to switch between displaying the piece lines or not.
+function lineSwitch()
+  if useLines == true then
+    useLines = false
+    lineImage = display.newImage("off_button.png")
+    lineImage:scale(0.5, 0.5)
+    lineImage.x = display.contentWidth / 4 * 3
+    lineImage.y = display.contentHeight / 4
+    pauseGroup:insert(lineImage)
+  else
+    useLines = true
+    lineImage = display.newImage("on_button.png")
+    lineImage:scale(0.5, 0.5)
+    lineImage.x = display.contentWidth / 4 * 3
+    lineImage.y = display.contentHeight / 4
+    pauseGroup:insert(lineImage)
+  end
+end
+
 --Listener method used to pause and unpause the game. Stops the pieces from moving and blocks the screen.
 function pauseGame()
 	if pause == false then
 		pause = true
 		audio.pause()
+    pauseGroup = display.newGroup()
+    
 		pause_block = display.newRect(0,0,1000, 1000)
 		pause_block:setFillColor(0,0,0)
-		pause_block:addEventListener("tap", pauseGame)
-		pauseText = display.newText("PAUSED", display.contentWidth/2, display.contentHeight/2, native.systemFontBold, 18)
+		
+    pauseGroup:insert(pause_block)
+    
+    local backText = display.newText("Back", display.contentWidth / 2 , display.contentHeight / 2, native.systemFontBold, 18)
+    local useLineText = display.newText("Display lines:", display.contentWidth / 4 , display.contentHeight / 4, native.systemFontBold, 16)
+    local useGhostText = display.newText("Display Ghost Piece:", display.contentWidth / 4 , display.contentHeight / 3,  native.systemFontBold, 16)
+    pauseText = display.newText("PAUSED", display.contentWidth/2, display.contentHeight/8, native.systemFontBold, 18)
+    
+    pauseGroup:insert(useLineText)
+    pauseGroup:insert(useGhostText)
+    pauseGroup:insert(backText)
+    
+    backText:addEventListener("tap", pauseGame)
+        
+    if use_ghostPiece == true then
+      ghostImage = display.newImage("on_button.png")
+    else
+      ghostImage = display.newImage("off_button.png")
+    end
+    
+    if useLines == true then
+      lineImage = display.newImage("on_button.png")
+    else
+      lineImage = display.newImage("off_button.png")
+    end
+  
+    ghostImage:scale(0.5, 0.5)
+    lineImage:scale(0.5, 0.5)
+  
+    ghostImage.x = display.contentWidth / 4 * 3
+    lineImage.x = display.contentWidth / 4 * 3
+    
+    ghostImage.y = display.contentHeight / 3
+    lineImage.y = display.contentHeight / 4
+    
+    ghostImage:addEventListener("tap", ghostPieceSwitch)
+    lineImage:addEventListener("tap", lineSwitch)
+    
+    pauseGroup:insert(ghostImage)
+    pauseGroup:insert(lineImage)
+     
 	else
 		pause = false
 		audio.resume()
 		pause_block:removeSelf()
 		pauseText:removeSelf()
+    --ghostImage:removeEventListener("tap", ghostPieceSwitch)
+    --lineImage:removeEventListener("tap", lineSwitch)
+    pauseGroup:removeSelf()
 	end
 end
+
 
 --Used to randomize the color of all the blocks currently on the board.
 function randomizeColor()
@@ -279,6 +384,7 @@ function randomizeColor()
 	end
 end
 
+
 --Deletes the references to all the blocks in the board to all deletion of blocks.
 function deleteBoard()
 	for i =0, board_height do
@@ -287,6 +393,7 @@ function deleteBoard()
 		end
 	end
 end
+
 
 --Used to draw the currentPiece thats falling.
 function drawPiece(the_pieces)
@@ -348,14 +455,17 @@ function drawPiece(the_pieces)
 	--line2:removeSelf()
 	
 	--Displays the lines off the currentPiece
-	local line1 = display.newLine(small_x , currentPiece.y - 35, small_x, 480)
-	local line2 = display.newLine(big_x, currentPiece.y - 35, big_x, 480)
+  
+  if useLines == true then
+    local line1 = display.newLine(small_x , currentPiece.y - 35, small_x, 480)
+    local line2 = display.newLine(big_x, currentPiece.y - 35, big_x, 480)
 	
-	pieceLines:insert(line1)
-	pieceLines:insert(line2)
+    pieceLines:insert(line1)
+    pieceLines:insert(line2)
 	
-	line1:setStrokeColor(0.33,0.0,1.0)
-	line2:setStrokeColor(0.33,0.0,1.0)
+    line1:setStrokeColor(0.33,0.0,1.0)
+    line2:setStrokeColor(0.33,0.0,1.0)
+  end
 	
 	--Draws the piece on the screen
 	display1 = display.newRect((j + the_pieces.piece1x) * board_offset + x_offset, (i + the_pieces.piece1y) * board_offset + y_offset, block_size, block_size)
@@ -372,6 +482,7 @@ function drawPiece(the_pieces)
 		ghostPiece()
 	end
 end
+
 
 --Draws the next piece to be created, in the corner.
 function drawNextPiece()
@@ -420,6 +531,7 @@ function drawNextPiece()
 	
 	
 end
+
 
 --Used to update the score and change levels
 function updateScore(rows)
@@ -510,6 +622,7 @@ function updateScore(rows)
 	end
 end
 
+
 --Creates the table that is the board.
 function createBoard()
 	for i = 0, board_height do
@@ -519,6 +632,7 @@ function createBoard()
 		end
 	end
 end
+
 
 --Increment the fillBoard number
 function addFill()
@@ -530,6 +644,7 @@ function addFill()
 	fillTextNumber = display.newText(fillBoard, display.contentWidth/4 * 3, display.contentHeight/6, native.systemFontBold, 16)
 end
 
+
 --decrement the fillBoard number
 function minusFill()
 	if fillBoard <= 0 then
@@ -539,6 +654,7 @@ function minusFill()
 	fillTextNumber:removeSelf()
 	fillTextNumber = display.newText(fillBoard, display.contentWidth/4 * 3, display.contentHeight/6, native.systemFontBold, 16)
 end
+
 
 --Listener method used to change if sound effects are to be used.
 function soundEffect()
@@ -561,6 +677,7 @@ function soundEffect()
 	end
 end
 
+
 --Listener method used to change if music is to be used.
 function soundMusic()
 	if music then
@@ -581,6 +698,7 @@ function soundMusic()
 		musicImage:addEventListener("tap", soundMusic)
 	end
 end
+
 
 --Listener method used to change the control method from tapping to buttons.
 function displayControl()
@@ -604,6 +722,7 @@ function displayControl()
 	end
 
 end
+
 
 --Creates the main menu screen.
 function addMenuScreen()
@@ -638,6 +757,7 @@ function addMenuScreen()
 
 end
 
+
 --Listener method used to transition from the main menu to the game.
 function tweenMS:tap(e)
 	if (e.target.name == 'startB') then
@@ -647,10 +767,12 @@ function tweenMS:tap(e)
 	end
 end
 
+
 --function used to exit after a second.
 function empty()
 	timer.performWithDelay(1000,os.exit())
 end
+
 
 --Listener method used to kill the app.
 function goAway()
@@ -664,12 +786,14 @@ function goAway()
 	timer.performWithDelay(1000, empty, 1)
 end
 
+
 --Listener method used to restart the game
 function recreate()
 	gameOverGroup:removeSelf()
 	timer.performWithDelay(1000, create, 1)
 	nextPieceGroup = display.newGroup()
 end
+
 
 --Used to stop the game when the user fails.
 function fail()
@@ -740,6 +864,7 @@ function fail()
 	end
 end
 
+
 --Used to create the currentPiece
 function createPiece()
 	updateScore(0)
@@ -780,6 +905,7 @@ function createPiece()
 	index = math.random(0,6)
 	drawNextPiece()
 end
+
 
 --Used to make the board match the screen.
 function updateBoard(the_pieces)
@@ -839,6 +965,7 @@ function updateBoard(the_pieces)
 	end
 end
 
+
 --Redraws the entire board and randomizes the color.
 function redraw()
 	group:removeSelf()
@@ -854,6 +981,7 @@ function redraw()
 	end
 end
 
+
 --Used to move rows down after completion of of a line.
 function rowFall(inital_row) 
 	for i = inital_row, 0, -1 do
@@ -866,6 +994,7 @@ function rowFall(inital_row)
 	end
 	redraw()
 end
+
 
 --Used to find and remove any completed rows.
 function removeRows()
@@ -895,6 +1024,7 @@ function removeRows()
 	updateScore(rows)
 end
 
+
 --Method to calculate if the top row has been filled. if so game over. 
 function checkTopRow()
 	local isPiece = false
@@ -906,6 +1036,7 @@ function checkTopRow()
 	end
 	return isPiece
 end
+
 
 --The logic to check if a move is possible given the numbers passed in, on the x and y axis.
 function checkMove(dx, dy)
@@ -965,6 +1096,7 @@ function checkMove(dx, dy)
 	return can
 end
 
+
 --Calculates the x value to drop the piece in the current location.
 function dropIndex()
 	local index = 0
@@ -978,6 +1110,7 @@ function dropIndex()
 	end
 	return index
 end
+
 
 --Displays the ghost piece on the screen.
 function ghostPiece()
@@ -1015,11 +1148,13 @@ function ghostPiece()
 	
 end
 
+
 --Listener method to drop the current piece.
 function dropPiece()
 	local index = dropIndex()
 	currentPiece.y = currentPiece.y + (index * height_offset)
 end
+
 
 --Freezes the current piece updates the board and creates a new piece.
 function freezePiece(freezeEvent)
@@ -1039,6 +1174,7 @@ function freezePiece(freezeEvent)
 	end
 end
 
+
 --Forces the piece down after so many frames has passed.
 function movePiece(moveEvent)
 	update = update + 1
@@ -1051,6 +1187,7 @@ function movePiece(moveEvent)
 		drawPiece(pieceRotation(currentPiece))
 	end
 end
+
 
 --Rotates the current piece.
 function rotate()
@@ -1090,6 +1227,7 @@ function rotate()
 	drawPiece(pieceRotation(currentPiece))
 end
 
+
 --Listener method called when asked to move the piece left. if possible moves, if not nothing.
 function moveLeft()
 	if currentPiece == nil then
@@ -1101,6 +1239,7 @@ function moveLeft()
 	drawPiece(pieceRotation(currentPiece))
 end
 
+
 --Listener method called when asked to move the piece right. if possible moves, if not nothing.
 function moveRight()
 	if currentPiece == nil then
@@ -1111,6 +1250,7 @@ function moveRight()
 	end
 	drawPiece(pieceRotation(currentPiece))
 end
+
 
 --Listener method for moving left using tap controls.
 function tapMove(e) 
@@ -1125,6 +1265,8 @@ function tapMove(e)
 	
 end
 
+
+
 --Listener method for droping the piece using tap controls
 function dropPieceMotion(e)
 	if (pause) then
@@ -1133,6 +1275,8 @@ function dropPieceMotion(e)
 		dropPiece()
 	end
 end
+
+
 
 --Prepopulates the boards with random blocks
 function fillBoardCreate()
@@ -1146,6 +1290,7 @@ function fillBoardCreate()
 	end
 end
  
+
 --Creates the game and all the stuff.
 function create()
 	start_over = true
@@ -1249,8 +1394,9 @@ function create()
 		audio.play(sfx.level_one, options)
 	end
 	Runtime:addEventListener("system", onSystemEvent)
-	timer.performWithDelay(1000,fail, 1)
+	--timer.performWithDelay(1000,fail, 1)
 end
+
 
 --Attempt to pause game when lost focus. Does not work currently.
 function onSystemEvent(event)
@@ -1258,6 +1404,7 @@ function onSystemEvent(event)
 		pauseGame()
 	end
 end
+
 
 --A horrible hard coded method for each rotation for each piece using a local x and y 
 --reference based off a central point. 
@@ -1454,6 +1601,7 @@ locations = {}
 	end
 	return locations
 end
+
 
 --Starts the game by starting the menu screen. game is reactionary after this point. 
 addMenuScreen()
